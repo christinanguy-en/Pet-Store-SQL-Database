@@ -1,0 +1,135 @@
+-- Part 1 CREATE TABLE Statement
+
+CREATE TABLE pet_traits
+(
+petID INT PRIMARY KEY,
+petType VARCHAR(7) NOT NULL,
+gender CHAR(1) NOT NULL,
+behavior VARCHAR(50) NOT NULL
+);
+
+-- Part 1 INSERT Statement
+
+INSERT INTO pet_traits (petID, petType, gender, behavior) 
+VALUES
+(1, 'dog', 'f', 'friendly'),
+(2, 'dog', 'm', 'shy'), 
+(3, 'dog', 'm', 'aggressive'),
+(4, 'dog', 'm', 'energetic'),
+(5, 'dog', 'f', 'shy'),
+(6, 'cat', 'm', 'aggressive'), 
+(7, 'cat', 'm', 'energetic'), 
+(8, 'cat', 'f', 'friendly'), 
+(9, 'cat', 'm', 'aggressive'), 
+(10, 'cat', 'f', 'independent'), 
+(11, 'hamster', 'f', 'energetic'),
+(12, 'gerbil', 'f', 'shy'),
+(13, 'gerbil', 'm', 'friendly'),
+(14, 'hamster', 'm', 'independent'),
+(15, 'hamster', 'f', 'shy'),
+(16, 'lizard', 'f', 'friendly'),
+(17, 'lizard', 'm', 'energetic'),
+(18, 'lizard', 'm', 'independent'),
+(19, 'lizard', 'f', 'shy'),
+(20, 'lizard', 'm', 'friendly');
+
+-- Part 1 WHERE Clause
+
+SELECT * FROM pet_traits
+WHERE (petType = ‘dog’ OR petType = ‘cat’) AND behavior =  ‘friendly’;
+
+-- Part 2 CREATE TABLE Statement
+
+CREATE TABLE pet_pricing_and_sales
+(
+uniqueID INT PRIMARY KEY,
+salePrice SMALLMONEY NOT NULL,
+createTimeStamp DATETIME NOT NULL,
+createdBy VARCHAR(25) NOT NULL,
+updateTimeStamp DATETIME NOT NULL,
+updatedBy VARCHAR(25) NOT NULL,
+petName VARCHAR(25) NOT NULL,
+buyerName VARCHAR(50) IS NULL,
+buyerPhoneNum VARCHAR(20) IS NULL,
+FOREIGN KEY (uniqueID) REFERENCES pet_traits(petID)
+);
+
+-- Part 2 INSERT Statement
+
+INSERT INTO pet_pricing_and_sales (uniqueID, salePrice, createTimeStamp, createdBy, updateTimeStamp, updatedBy, petName, buyerName, buyerPhoneNum)
+VALUES
+(1, 500.50, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Bella'),
+(2, 640.50, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Sam'),
+(3, 700.25, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Max'),
+(4, 860.50, '2024-10-01 20:10:29', 'Emma', '2024-10-06 20:30:44', 'Emma', 'Rocky'),
+(5, 800.50, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Lucy'),
+(6, 245.25, '2024-10-03 20:10:29', 'Emma', '2024-10-06 20:30:44', 'Emma', 'Cooper'),
+(7, 290.00, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Jack'),
+(8, 160.25, '2024-10-01 20:10:29', 'Emma', '2024-10-06 20:30:44', 'Emma', 'Pumpkin'),
+(9, 270.50, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Grumpy'),
+(10, 130.75, '2024-10-03 20:10:29', 'Emma', '2024-10-06 20:30:44', 'Emma', 'Bailey'),
+(11, 20.00, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Butterscotch', 'John Smith', '(215)-245-3456'),
+(12, 23.25, '2024-10-01 20:10:29', 'Emma', '2024-10-06 20:30:44', 'Emma', 'Toodles', 'Jane Doe', '(610)-346-3423'),
+(13, 26.00, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Oreo'),
+(14, 25.75, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Ted'),
+(15, 30.00, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Muffin'),
+(16, 100.50, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Peanut'),
+(17, 79.50, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Milo'),
+(18, 85.25, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Gus'),
+(19, 75.50, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Penelope'),
+(20, 93.75, '2024-10-01 20:24:49', 'Christina', '2024-10-06 20:30:44', 'Christina', 'Chip');
+
+-- Part 2 INNER JOIN Query
+
+SELECT petID, uniqueID, petName, salePrice
+FROM pet_traits 
+INNER JOIN pet_pricing_and_sales
+ON pet_traits.petID = pet_pricing_and_sales.uniqueID
+WHERE buyerName IS NULL AND buyerPhoneNum IS NULL;
+
+-- Part 2 CREATE VIEW Query
+
+CREATE VIEW pet_inventory
+AS
+SELECT petID, uniqueID, petName, salePrice, buyerName, buyerPhoneNum
+FROM pet_traits
+INNER JOIN pet_pricing_and_sales
+ON pet_traits.petID = pet_pricing_and_sales.uniqueID
+WHERE buyerName IS NULL AND buyerPhoneNum IS NULL;
+
+-- Part 3 Stored Procedure
+
+CREATE PROCEDURE sell_pet
+    @petID INT,
+    @updatedBy VARCHAR(25),
+    @buyerName VARCHAR(50),
+    @buyerPhoneNum VARCHAR(20)
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM pet_pricing_and_sales
+        WHERE uniqueID = @petID AND buyerName IS NULL AND buyerPhoneNum IS NULL
+    )
+    BEGIN
+        UPDATE pet_pricing_and_sales
+        SET 
+		buyerName = @buyerName,
+		buyerPhoneNum = @buyerPhoneNum,
+		updateTimeStamp = GETDATE(),
+		updatedBy = @updatedBy
+        WHERE uniqueID = @petID;
+    END
+    ELSE
+    BEGIN
+        PRINT 'Pet is not available for sale.'
+    END
+END
+
+
+-- Part 3 Stored Procedure Execution
+
+EXEC sell_pet
+	@petID = 10,
+	@updatedBy = 'Christina',
+	@buyerName = 'Johnny Appleseed',
+	@buyerPhoneNum = '(267)-324-4354';
