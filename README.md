@@ -31,7 +31,7 @@ price information I want to quickly check. Creating the view also helps me focus
 behaviors in certain pet types to help customers narrow down the characteristics they would be looking for in their pet, whereas my Part 2 SELECT Statement was focused on viewing the inventory
 and pricing information of the pets that have been sold or waiting to be sold in the pet store.
 ## Part 3: Creating a Stored Procedure to record the sale of a pet
-### The Stored Procedure Explanation:
+### Stored Procedure Explanation:
 The Stored Procedure accurately checks to make sure the pet is in stock before updating it with the buyer's information.
 ### Sample Stored Procedure Execution Explanation:
 In this example query, I am selling Bailey, the cat, as indicated by her petID number being 10 to a customer named Johnny Appleseed and recording his phone number.
